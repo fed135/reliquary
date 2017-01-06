@@ -1,0 +1,11 @@
+{
+  "name": "reliquary",
+  "version": "1.0.0",
+  "description": "Logger that publishes to NewRelic",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
