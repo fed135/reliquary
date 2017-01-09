@@ -10,16 +10,16 @@ const Pool = require('./src/Pool');
 
 /* Methods -------------------------------------------------------------------*/
 
-function start() {
+function monitor(app) {
     // 1- Load config/ENV variables
-    // 2- Spawn agents
-    // 3- Dissapear
+    // 2- Hook to Express app (arg)
+    // 3- (Optionnal) monitor process' hardware usage
 
 
-    // Agent spawn test
-    Pool.spawn();
+    // Dispatch test
+    Pool.dispatch({test: 'FOO'});
 }
 
 /* Exports -------------------------------------------------------------------*/
 
-module.exports = { start };
+module.exports = { monitor };
