@@ -17,9 +17,10 @@ const crypto = require('crypto');
 /* Methods -------------------------------------------------------------------*/
 
 class Pool extends EventEmitter {
-    constructor(options) {
+    constructor(role, options) {
         super();
 
+        this.role = role;
         this.options = Object.assign({}, options);
         this.last_attempt = 0;
         this.agent = null;
@@ -29,7 +30,7 @@ class Pool extends EventEmitter {
     }
 
     spawn() {
-        this.agent = child_process.fork(path.join(__dirname,'entities/agent'));
+        this.agent = child_process.fork(path.join(__dirname,'agents', this.role));
         this.emit(Events.AGENT_CREATED, this.agent);
         this.agent.on('message', this.handle_submitted.bind(this));
         this.agent.on('close', this.recover.bind(this));
@@ -83,4 +84,4 @@ class Pool extends EventEmitter {
 
 /* Exports -------------------------------------------------------------------*/
 
-module.exports = new Pool();
+module.exports = Pool;
