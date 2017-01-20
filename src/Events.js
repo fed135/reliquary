@@ -9,9 +9,8 @@
 module.exports = {
     AGENT_CREATED: 'agentCreated',
 
-    EXPRESS_PARAM: 'expressParam',
-    EXPRESS_PROCESS: 'expressProcess',
-    EXPRESS_RENDER: 'expressRender',
-    EXPRESS_ROUTE: 'expressRoute',
-    EXPRESS_USE: 'expressUse'
+    EXPRESS_HANDLE: 'expressHandle',
+    EXPRESS_FINISH: 'expressFinish',
+
+    PROC_MONIT: 'procMonit'
 };
