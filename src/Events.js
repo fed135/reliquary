@@ -9,8 +9,5 @@
 module.exports = {
     AGENT_CREATED: 'agentCreated',
 
-    EXPRESS_HANDLE: 'expressHandle',
-    EXPRESS_FINISH: 'expressFinish',
-
-    PROC_MONIT: 'procMonit'
+    HOOK_EVENT: 'hookEvent',
 };

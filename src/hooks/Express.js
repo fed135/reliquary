@@ -13,37 +13,40 @@ const Events = require('../Events');
 
 /* Methods -------------------------------------------------------------------*/
 
-class ExpressHook extends EventEmitter {
-    constructor(app) {
-        super();
-
+function create(hook) {
+    return Object.assign({
         // Hijacks some express internals
         // Works for Express v4 and up
-        
-        const _handle = app.handle.bind(app);
-        app.handle = (req, res) => {
-            const reqId = crypto.randomBytes(20).toString('hex');
-            this.emit(Events.EXPRESS_HANDLE, {
-                uri: req.url,
-                method: req.method,
-                evt: Events.EXPRESS_HANDLE,
-                timestamp: Date.now(),
-                reqId
-            });
-            res.on('finish', (evt) => {
-                this.emit(Events.EXPRESS_FINISH, {
-                    statusCode: res.statusCode,
-                    statusMessage: res.statusMessage,
-                    evt: Events.EXPRESS_FINISH,
+        init: (app) => {
+            console.log(arguments)
+            const _handle = app.handle.bind(app);
+            app.handle = (req, res) => {
+                const reqId = crypto.randomBytes(20).toString('hex');
+                this.emit(Events.HOOK_EVENT, {
+                    uri: req.url,
+                    method: req.method,
+                    evt: 'incomming',
                     timestamp: Date.now(),
-                    reqId
+                    reqId,
+                    hook
                 });
-            });
-            _handle(req, res);
-        };
-    }
-}
+                res.on('finish', (evt) => {
+                    this.emit(Events.HOOK_EVENT, {
+                        statusCode: res.statusCode,
+                        statusMessage: res.statusMessage,
+                        evt: 'finish',
+                        timestamp: Date.now(),
+                        reqId,
+                        hook
+                    });
+                });
+                _handle(req, res);
+            };
+        }
+    },
+    EventEmitter.prototype);
+};
 
 /* Exports -------------------------------------------------------------------*/
 
-module.exports = ExpressHook;
+module.exports = create;
