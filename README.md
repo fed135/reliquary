@@ -2,13 +2,18 @@
 
 A very lightweight and modular monitoring solution.
 
+*No dependencies required!*
+
+[![Reliquary](https://img.shields.io/npm/v/reliquary.svg)](https://www.npmjs.com/package/reliquary)
+[![Build Status](https://travis-ci.org/fed135/reliquary.svg?branch=master)](https://travis-ci.org/fed135/reliquary)
+
 ## Basic setup
 
 Starting Reliquary is done explicitely in the entry point of your application.
 
-You need to plug in your **hooks** what collects data 
+You need to plug in your **hooks** (what collects data)
 
-and your **agents**, where that data goes.
+And your **agents** (where the data should go).
 
 ```
 /* Requires ------------------------------------------------------------------*/
