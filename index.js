@@ -11,6 +11,10 @@ const Pool = require('./src/Pool');
 const Hooks = require('./src/hooks');
 const Agents = require('./src/agents');
 
+/* Local variables -----------------------------------------------------------*/
+
+let enabled = true;
+
 /* Methods -------------------------------------------------------------------*/
 
 function monitor(params) {
@@ -24,7 +28,7 @@ function monitor(params) {
         .map((agent_name) => new Pool(agent_name, config.agents[agent_name]));
 
     const channel = (packet) => {
-        agents.forEach((agent) => agent.dispatch(packet));
+        if (enabled) agents.forEach((agent) => agent.dispatch(packet));
     };
 
     // Hooks
@@ -37,10 +41,15 @@ function monitor(params) {
         });
 }
 
+function enable(val) {
+    enabled = val;
+}
+
 /* Exports -------------------------------------------------------------------*/
 
 module.exports = { 
     monitor, 
     hooks: Hooks,
-    agents: Agents
+    agents: Agents,
+    enable
 };
