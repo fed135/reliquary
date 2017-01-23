@@ -16,14 +16,8 @@ const app = express();
 
 reliquary.monitor({
   hooks: {
-    express: {
-      with: reliquary.hooks.Express,
-      dependencies: [app]
-    },
-    sys: {
-      with: reliquary.hooks.Sys,
-      dependencies: [process, require('os')]
-    }
+    express: new reliquary.hooks.Express(app),
+    sys: new reliquary.hooks.Sys(process, require('os'))
   },
   agents: {
     newrelic: {

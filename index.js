@@ -30,14 +30,11 @@ function monitor(params) {
     // Hooks
     const hooks = Object.keys(config.hooks)
         .map((hook_name) => {
-            console.log('Setting hook', hook_name, config.hooks[hook_name]);
-            const hook = config.hooks[hook_name].with(hook_name);
-            hook.init.call(hook, config.hooks[hook_name].dependencies);
+            const hook = config.hooks[hook_name];
+            hook.setName(hook_name);
             hook.on(Events.HOOK_EVENT, channel);
             return hook;
         });
-
-    console.log(agents, hooks)
 }
 
 /* Exports -------------------------------------------------------------------*/
