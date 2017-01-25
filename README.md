@@ -7,6 +7,17 @@ A very lightweight and modular monitoring solution.
 [![Reliquary](https://img.shields.io/npm/v/reliquary.svg)](https://www.npmjs.com/package/reliquary)
 [![Build Status](https://travis-ci.org/fed135/reliquary.svg?branch=master)](https://travis-ci.org/fed135/reliquary)
 
+
+## About
+
+Reliquary is a drop in solution for API monitoring. It is meant to be as lightweight and as unintrucive as possible.
+
+Currently, most commercial Node clients are bulky, unoptimized and actually impact the performances of your application.
+
+This library has **no dependencies** for the fastest possible install, treats messages in seperate forks to keep 
+the main process running at top speed and is fully modular so that you can load your own hooks and agents easily!
+
+
 ## Basic setup
 
 Starting Reliquary is done explicitely in the entry point of your application.
@@ -27,13 +38,11 @@ const app = express();
 
 reliquary.monitor({
   hooks: {
-    my_app: new reliquary.hooks.Express(app),
-    sys: new reliquary.hooks.Sys()
+    my_app: reliquary.hooks.Express(app),
+    sys: reliquary.hooks.Sys()
   },
   agents: {
-    newrelic: {
-      token: 'abc'
-    }
+    newrelic: reliquary.agents.NewRelic({ token: 'abc' })
   }
 });
 
@@ -52,6 +61,7 @@ We also set up a hook to collect process performance metrics that we named **sys
 
 Finally, we set up our Newrelic agent, which is the entity that will be talking to the newrelic API, with our configuration. 
 
+
 ## Hooks
 
 Right now, **Express** and **Sys** are the only 2 hooks that ship with reliquary, but it is possible to load your own.
@@ -63,13 +73,27 @@ These events will be funnelled to agents.
 
 ## Agents
 
-Right now, newrelic is the only supported agent. ...Until I figure out a clean way to pass a module url to be forked via config.
+Right now, newrelic is the only built-in agent. To load your own, just pass a 'role' property to the options with the absolute path to the agent module. 
+Ex:
+
+```
+agents: {
+    google_analytics: { name: 'Google Analytics', role: path.join(__dirname, 'ga'), token: 'abc' }
+}
+```
+
+An agent receives process events `[EVT, [messages, ...]]`. 
+
+Once a message is treated, the process needs to report back to the reliquary agent Pool with the id of that message, so it can be marked as processed. 
+Otherwise, the message will be processed again after it's timeout during the next cycle.
+
 
 ## Installing
 
 Compatible with Node v4+
 
 `npm install reliquary --save`
+
 
 ## Disabling
 
