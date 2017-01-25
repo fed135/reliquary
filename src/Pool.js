@@ -9,9 +9,8 @@
 
 const Events = require('./Events');
 
-const child_process = require('child_process');
+const fork = require('child_process').fork;
 const EventEmitter = require('events').EventEmitter;
-const path = require('path');
 const crypto = require('crypto');
 
 /* Methods -------------------------------------------------------------------*/
@@ -20,7 +19,6 @@ class Pool extends EventEmitter {
     constructor(role, options) {
         super();
 
-        this.role = role;
         this.options = Object.assign({ role }, options);
         this.last_attempt = 0;
         this.agent = null;
@@ -30,7 +28,7 @@ class Pool extends EventEmitter {
     }
 
     spawn() {
-        this.agent = child_process.fork(path.join(__dirname,'agents', this.role));
+        this.agent = fork(this.options.role);
         this.agent.send(['CON', this.options]);
         this.emit(Events.AGENT_CREATED, this.agent);
         this.agent.on('message', this.handle_submitted.bind(this));

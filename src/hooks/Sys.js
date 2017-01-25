@@ -18,29 +18,34 @@ const PROBE_FREQ = 1000 * 60;
 class SysHook extends Hook {
     constructor(proc, os) {
         super();
-        
+
+        this.bbtime = Date.now();
+        this.probe_count = 0;
         this.monitor = this.probe.bind(this, proc || process, os || require('os'));
         this.timer = setTimeout(this.monitor, 0);
     }
 
     probe(proc, os) {
         const now = Date.now();
-        const diff = now - this.last_probe;
-        this.last_probe = now;
+        this.probe_count++;
+        const next_probe = this.bbtime + (PROBE_FREQ * this.probe_count);
         this.timer = setTimeout(
             this.monitor,
-            Math.max(0, PROBE_FREQ + (PROBE_FREQ - diff))
+            Math.max(0, next_probe - now)
         );
 
         this.emit(Events.HOOK_EVENT, {
             timestamp: now,
             mem: proc.memoryUsage().rss,
             cpu: os.loadavg()[0],
-            hook: 'sys'
+            hook: this.name
         });
     }
 }
 
 /* Exports -------------------------------------------------------------------*/
 
-module.exports = SysHook;
+// TODO: Ugly closure to revise (had trouble with composition scoping)
+module.exports = function create(proc, os) {
+    return new SysHook(proc, os);
+};

@@ -47,4 +47,7 @@ class ExpressHook extends Hook {
 
 /* Exports -------------------------------------------------------------------*/
 
-module.exports = ExpressHook;
+// TODO: Ugly closure to revise (had trouble with composition scoping)
+module.exports = function create(app) {
+    return new ExpressHook(app);
+};
