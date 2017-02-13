@@ -29,7 +29,7 @@ class Pool extends EventEmitter {
 
     spawn() {
         this.agent = fork(this.options.role);
-        this.agent.send(['CON', this.options]);
+        this.agent.send(Events.CONFIG(this.options));
         this.emit(Events.AGENT_CREATED, this.agent);
         this.agent.on('message', this.handle_submitted.bind(this));
         this.agent.on('close', this.recover.bind(this));
@@ -44,13 +44,13 @@ class Pool extends EventEmitter {
         if (this.queue.length > 0) {
             const current_agent = this.agent.pid;
 
-            this.agent.send(['PKT', this.queue
+            this.agent.send(Events.PACKETS(this.queue
                 .filter((packet) => {
                     const to_send = packet.agent !== current_agent;
                     packet.agent = current_agent;
                     return to_send;
                 })
-            ]);
+            ));
         }
     }
 
@@ -68,7 +68,7 @@ class Pool extends EventEmitter {
     dispatch(event) {
         const packet = { 
             event, 
-            id: crypto.randomBytes(20).toString('hex'),
+            id: crypto.randomBytes(6).toString('hex'),
             agent: null
         };
 
@@ -76,7 +76,7 @@ class Pool extends EventEmitter {
         if (this.agent === null) this.recover();
         else {
             packet.agent = this.agent.pid;
-            this.agent.send(['PKT', [packet]]);
+            this.agent.send(Events.PACKETS([packet]));
         }
     }
 }
