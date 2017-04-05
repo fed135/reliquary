@@ -26,7 +26,7 @@ You need to plug in your **hooks** (what collects data)
 
 And your **agents** (where the data should go).
 
-```
+```node
 /* Requires ------------------------------------------------------------------*/
 
 const reliquary = require('reliquary');
@@ -99,8 +99,15 @@ Compatible with Node v4+
 
 You can disable or re-enable reliquary globaly at any given time in your application.
 
-```
+```node
 const reliquary = require('reliquary');
 reliquary.enable(false); // Disables reporting
 reliquary.enable(true); // Restores reporting
 ```
+
+## Roadmap
+
+- Add triggers option in express routes hook (ex: call exceeds KPI), then run CPU Profiling on next similar call
+- Add triggers option in system hook (ex: memory goes over x Mb), then run a heap Snapshot
+
+See: https://github.com/node-inspector/v8-profiler
